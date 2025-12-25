@@ -1,0 +1,15 @@
+new projek
+pojok kanan atas, nomor 3, device manager
+medium phone api 36.1
+di play
+bawahnya yang keempat
+
+di terminal bikin folder sebelumnya:
+cd namaApps
+npx expo start
+ketik a
+
+tunggu
+
+ketik r, kanan
+kalo lama, ctrl c, ulang r
