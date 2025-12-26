@@ -1,8 +1,4 @@
-// Configuration untuk API Backend
-import Constants from 'expo-constants';
-
-const isLocal = false; // true saat development
-
+// app/api/config.ts
 export const API_CONFIG = {
   BASE_URL: 'https://virtuallab-production.up.railway.app',
   ENDPOINTS: {
@@ -13,51 +9,69 @@ export const API_CONFIG = {
   },
 };
 
-// Helper function untuk get headers dengan token
-export function getAuthHeaders(token?: string) {
+export function getAuthHeaders(token?: string | null) {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   };
+
   if (token) {
-    headers['Authorization'] = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
+
   return headers;
 }
 
-// Helper function untuk API calls dengan error handling lengkap
-export async function apiCall(endpoint: string, options: {
+type ApiCallOptions = {
   method?: string;
   headers?: Record<string, string>;
   body?: any;
-  token?: string;
-} = {}) {
+  token?: string | null;
+};
+
+export async function apiCall(endpoint: string, options: ApiCallOptions = {}) {
   const url = `${API_CONFIG.BASE_URL}${endpoint}`;
 
   const config: RequestInit = {
     method: options.method || 'GET',
     headers: {
       ...getAuthHeaders(options.token),
-      ...options.headers,
+      ...(options.headers || {}),
     },
   };
 
-  if (options.body) {
+  if (options.body !== undefined) {
     config.body = JSON.stringify(options.body);
   }
 
   try {
     const response = await fetch(url, config);
-    const data = await response.json();
+
+    // kadang backend balikin non-json saat error tertentu
+    const text = await response.text();
+    const data = text ? safeJsonParse(text) : null;
 
     if (!response.ok) {
-      throw new Error(data.detail || data.message || 'Request gagal');
+      // web version kamu pakai data.detail untuk error :contentReference[oaicite:2]{index=2}
+      const message =
+        (data && (data.detail || data.message)) ||
+        `Request gagal (HTTP ${response.status})`;
+      throw new Error(message);
     }
 
     return data;
   } catch (error: any) {
-    if (error.name === 'TypeError' && error.message.includes('fetch')) {
-      throw new Error('Tidak dapat terhubung ke server. Pastikan backend sedang berjalan.');
+    // error jaringan / CORS (di RN biasanya: TypeError: Network request failed)
+    if (error?.name === 'TypeError') {
+      throw new Error('Tidak dapat terhubung ke server. Periksa koneksi & BASE_URL.');
     }
     throw error;
+  }
+}
+
+function safeJsonParse(text: string) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    return null;
   }
 }
