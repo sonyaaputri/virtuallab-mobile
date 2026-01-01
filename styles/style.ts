@@ -13,47 +13,30 @@ export const COLORS = {
 };
 
 export const GRADIENTS = {
-  landing: ['#8441A4', '#FF5B94'], // landing-page background
-  primary: ['#8441A4', '#FF5B94'], // btn-primary, btn-gradient-flip
+  landing: ['#8441A4', '#C44F9C'],
+  primary: ['#8441A4', '#9044A2'],
   footer: ['#630436', '#77297A'],
   animatedLine: ['#FF5B94', '#8441A4', '#FF5B94'],
 };
 
-/**
- * NOTE PENTING:
- * - CSS kamu banyak pakai gradient background.
- * - Di RN, StyleSheet tidak bisa langsung pakai "linear-gradient".
- * - Jadi gradient harus dirender pakai `expo-linear-gradient` di komponen,
- *   tapi nilai warnanya tetap dari GRADIENTS di atas (biar konsisten).
- */
-
 export const globalStyles = StyleSheet.create({
-  // mirip body
   screen: {
     flex: 1,
     backgroundColor: COLORS.white,
   },
-
-  // .container
   container: {
     width: '100%',
-    maxWidth: 1200, // di RN ini tidak ngunci, tapi jadi patokan web-style
+    maxWidth: 1200,
     alignSelf: 'center',
     paddingHorizontal: 20,
   },
 
-  // text defaults
   text: {
     color: COLORS.text,
     lineHeight: 22,
   },
 });
 
-/**
- * Button styles
- * CSS:
- * .btn, .btn-primary, .btn-secondary, .btn-gradient-flip
- */
 export const buttonStyles = StyleSheet.create({
   btn: {
     paddingVertical: 12,
@@ -63,7 +46,7 @@ export const buttonStyles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  // .btn-primary (gradient dipakai via LinearGradient wrapper)
+  // .btn-primary
   btnPrimaryText: {
     color: COLORS.white,
     fontSize: 16,
@@ -74,119 +57,109 @@ export const buttonStyles = StyleSheet.create({
   btnSecondary: {
     backgroundColor: 'transparent',
     borderWidth: 2,
-    borderColor: COLORS.purple,
+    borderColor: '#6A278B',
   },
   btnSecondaryText: {
-    color: COLORS.purple,
+    color: '#ffffff',
     fontSize: 16,
     fontWeight: '600',
   },
 
-  // khusus tombol lebar full (mirip banyak layout web)
   btnFullWidth: {
     width: '100%',
   },
 });
 
-/**
- * Landing / Navbar / Hero / Features / Footer
- * Dari style.css landing page:
- * .landing-page, .navbar, .nav-content, .logo, .nav-buttons, .hero, .features, dll.
- */
 export const landingStyles = StyleSheet.create({
   // .landing-page
   landingPage: {
     flex: 1,
   },
 
-  // .navbar (web: fixed + blur). Di RN: kita bikin "sticky feel" dengan padding top di konten
+  // .navbar
   navbar: {
     width: '100%',
     paddingVertical: 20,
     paddingHorizontal: 0,
-    // fallback dari rgba blur
     backgroundColor: 'rgba(255,255,255,0.1)',
   },
-
+  
   navContent: {
     flexDirection: SCREEN_WIDTH <= 768 ? 'column' : 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 15 as any, // RN gap support tergantung versi; aman kalau kamu mau ganti manual dengan margin
+    gap: 15 as any,
+    paddingHorizontal: 20, 
+    maxWidth: 1200,
+    alignSelf: 'center',
+    width: '100%',
   },
-
   logoRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-
   logoText: {
     fontSize: SCREEN_WIDTH <= 768 ? 24 : 28,
     fontWeight: 'bold',
     color: COLORS.white,
   },
-
   navButtons: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     columnGap: 15 as any,
+    marginRight: SCREEN_WIDTH <= 768 ? 0 : 0,
   },
 
-  // HERO
-  hero: {
-    paddingTop: 120,
-    paddingBottom: 80,
-  },
+// HERO
+hero: {
+  paddingTop: 25,
+  paddingBottom: 50,
+  alignItems: 'center',
+},
+heroContent: {
+  flexDirection: SCREEN_WIDTH <= 768 ? 'column' : 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: SCREEN_WIDTH <= 768 ? 30 : 40,
+  minHeight: SCREEN_WIDTH <= 768 ? undefined : 400,
+},
+heroMascotWrap: {
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: SCREEN_WIDTH <= 768 ? 250 : 300,
+},
+heroMascotImage: {
+  width: SCREEN_WIDTH <= 768 ? 200 : 350,
+  height: SCREEN_WIDTH <= 768 ? 250 : 420,
+  resizeMode: 'contain',
+},
+heroTextWrap: {
+  flex: SCREEN_WIDTH <= 768 ? 0 : 1,
+  alignItems: 'center',
+  maxWidth: 800,
+},
+heroTitle: {
+  fontSize: SCREEN_WIDTH <= 768 ? 40 : 56,
+  fontWeight: 'bold',
+  color: COLORS.white,
+  marginBottom: 20,
+  textAlign: 'center',
+  textShadowColor: 'rgba(0,0,0,0.3)',
+  textShadowOffset: { width: 2, height: 2 },
+  textShadowRadius: 4,
+},
+heroParagraph: {
+  fontSize: SCREEN_WIDTH <= 768 ? 16 : 21,
+  color: COLORS.white,
+  opacity: 0.9,
+  marginBottom: 40,
+  maxWidth: 600,
+  textAlign: 'center',
+  lineHeight: 26,
+},
 
-  heroContent: {
-    flexDirection: SCREEN_WIDTH <= 768 ? 'column' : 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: SCREEN_WIDTH <= 768 ? 30 : 40,
-    minHeight: SCREEN_WIDTH <= 768 ? undefined : 400,
-  },
-
-  heroMascotWrap: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: SCREEN_WIDTH <= 768 ? 250 : 300,
-  },
-
-  heroMascotImage: {
-    width: SCREEN_WIDTH <= 768 ? 200 : 350,
-    height: SCREEN_WIDTH <= 768 ? 250 : 420,
-    resizeMode: 'contain',
-  },
-
-  heroTextWrap: {
-    flex: SCREEN_WIDTH <= 768 ? 0 : 1,
-    alignItems: SCREEN_WIDTH <= 768 ? 'center' : 'flex-start',
-  },
-
-  heroTitle: {
-    fontSize: SCREEN_WIDTH <= 768 ? 40 : 56, // 2.5rem ~ 40, 3.5rem ~ 56
-    fontWeight: 'bold',
-    color: COLORS.white,
-    marginBottom: 20,
-    textAlign: SCREEN_WIDTH <= 768 ? 'center' : 'left',
-    // textShadow padanan text-shadow
-    textShadowColor: 'rgba(0,0,0,0.3)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
-  },
-
-  heroParagraph: {
-    fontSize: SCREEN_WIDTH <= 768 ? 16 : 21, // 1.0rem / 1.3rem kira-kira
-    color: COLORS.white,
-    opacity: 0.9,
-    marginBottom: 40,
-    maxWidth: 600,
-    textAlign: 'center',
-    lineHeight: 26,
-  },
-
-  // FEATURES section
+  // FEATURES
   featuresSection: {
     paddingVertical: 80,
     backgroundColor: COLORS.white,
@@ -208,7 +181,7 @@ export const landingStyles = StyleSheet.create({
     lineHeight: 26,
   },
 
-  // features-grid (web: 4 columns, mobile: 1 column)
+  // features-grid
   featuresGrid: {
     width: '100%',
     flexDirection: 'column',
@@ -255,7 +228,7 @@ export const landingStyles = StyleSheet.create({
 
   footerAnimatedLine: {
     height: 4,
-    backgroundColor: COLORS.pink, // gradient-nya nanti via LinearGradient kalau mau persis
+    backgroundColor: COLORS.pink,
   },
 
   footerContainer: {
@@ -285,13 +258,7 @@ export const landingStyles = StyleSheet.create({
   },
 });
 
-/**
- * Auth-related styles in style.css (modal/form)
- * Kamu sekarang sudah punya auth styling sendiri (auth.css),
- * tapi aku tetap convert bagian ini biar konsisten kalau halaman lain masih pakai.
- */
 export const authCommonStyles = StyleSheet.create({
-  // .modal (di RN biasanya pakai <Modal/> + overlay view)
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.8)',
@@ -335,6 +302,4 @@ export const authCommonStyles = StyleSheet.create({
     borderRadius: 8,
     fontSize: 16,
   },
-
-  // focus state di RN pakai state (onFocus/onBlur) -> ganti borderColor manual
 });
