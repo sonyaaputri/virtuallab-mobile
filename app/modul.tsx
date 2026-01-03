@@ -66,7 +66,6 @@ export default function ModulHukumNewtonScreen() {
   });
 
   useEffect(() => {
-    // web: initializeUserInfo() -> redirect kalau tidak ada user
     (async () => {
       const userStr = await AsyncStorage.getItem('currentUser');
       if (!userStr) {
@@ -99,14 +98,11 @@ export default function ModulHukumNewtonScreen() {
   };
 
   const goBackToDashboard = () => {
-    // web: kembali ke homepage.html
-    // di mobile: balik ke halaman sebelumnya jika ada, kalau tidak ada -> ke tabs
     if (router.canGoBack()) router.back();
     else router.replace('/(tabs)' as any);
   };
 
   const goToSimulation = () => {
-    // web: simulation-hukum-newton.html?lab=newton-laws
     router.push({ pathname: '/simulation', params: { lab: 'newton-laws' } } as any);
   };
 
@@ -134,7 +130,6 @@ export default function ModulHukumNewtonScreen() {
   };
 
   const onAnchorLayout = (key: SectionKey) => (e: any) => {
-    // ambil y dulu supaya gak akses event yang sudah null
     const y = e?.nativeEvent?.layout?.y ?? 0;
     setAnchors((prev) => ({ ...prev, [key]: y }));
     };
@@ -159,7 +154,7 @@ export default function ModulHukumNewtonScreen() {
 
   return (
     <View style={modulStyles.screen}>
-                {/* HEADER (simple mobile) */}
+    {/* HEADER */}
     <SafeAreaView edges={['top']} style={modulStyles.header}>
     <View style={modulStyles.headerInnerOneRow}>
         {/* Back */}
@@ -167,7 +162,7 @@ export default function ModulHukumNewtonScreen() {
         <Text style={modulStyles.backIcon}>‹</Text>
         </Pressable>
 
-        {/* Logo + Title */}
+        {/* Logo */}
         <View style={modulStyles.headerCenter}>
         <Image source={require('../assets/images/4.png')} style={modulStyles.logoImg} />
         <Text style={modulStyles.logoText}>PhysicsLab Virtual</Text>
@@ -181,7 +176,6 @@ export default function ModulHukumNewtonScreen() {
         </Pressable>
     </View>
     </SafeAreaView>
-
 
       <ScrollView ref={scrollRef} contentContainerStyle={modulStyles.scrollContent}>
         <View style={modulStyles.container}>
@@ -438,15 +432,13 @@ export default function ModulHukumNewtonScreen() {
           </View>
 
           {/* CTA */}
-          <View style={{ alignItems: 'center', marginTop: 20, marginBottom: 60 }}>
+          <View style={{ marginTop: 10, marginBottom: 60 }}>
             <Pressable onPress={goToSimulation}>
-              <LinearGradient colors={GRADIENTS.primary} style={modulStyles.btnPrimary}>
-                <Text style={modulStyles.btnPrimaryText}>🚀 Coba Simulasi Interaktif</Text>
+              <LinearGradient colors={GRADIENTS.primary1} style={modulStyles.btnPrimary}>
+                <Text style={modulStyles.btnPrimaryText}>Coba Simulasi Interaktif</Text>
               </LinearGradient>
             </Pressable>
           </View>
-
-          {/* FOOTER: sengaja dihapus sesuai permintaan */}
         </View>
       </ScrollView>
     </View>

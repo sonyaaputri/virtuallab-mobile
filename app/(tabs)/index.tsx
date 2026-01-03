@@ -134,8 +134,6 @@ function getButtonText(item: ContentItem, type: TabName) {
 }
 
 function getMetaText(item: ContentItem, type: TabName) {
-  // Di web, meta selalu pakai difficulty. Tapi quiz data tidak punya difficulty. :contentReference[oaicite:6]{index=6}
-  // Ini fallback yang tetap “setara info”-nya untuk quiz.
   if (type === 'quiz') return `📊 ${item.questions ?? 10} Soal`;
   return `📊 ${item.difficulty ?? '-'}`;
 }
@@ -164,11 +162,9 @@ export default function HomePageTab() {
   const numColumns = width >= 750 ? 2 : 1;
 
   useEffect(() => {
-    // web: initializeUserInfo() redirect kalau tidak ada user :contentReference[oaicite:7]{index=7}
     (async () => {
       const userStr = await AsyncStorage.getItem(CONFIG.STORAGE_KEYS.USER);
       if (!userStr) {
-        // setara web redirect ke index.html
         router.replace('/');
         return;
       }
@@ -216,10 +212,7 @@ export default function HomePageTab() {
     }
 
     if (type === 'simulasi') {
-      // web: showSimulation -> simulation-hukum-newton.html?lab=... :contentReference[oaicite:8]{index=8}
       if (CONFIG.AVAILABLE_LABS.includes(item.id)) {
-        // NANTI: route ini kita buat saat convert simulasi
-        // aku set dulu placeholder rute yang rapi:
         router.push({ pathname: '/simulation', params: { lab: item.id } } as any);
       } else {
         openComingSoon(item, type);
@@ -228,14 +221,11 @@ export default function HomePageTab() {
     }
 
     if (type === 'quiz') {
-      // web: quiz -> quiz.html :contentReference[oaicite:9]{index=9}
       router.push('/quiz');
       return;
     }
 
-    // modul
     if (item.id === 'newton-laws-module') {
-      // web: modul newton -> modul-hukum-newton.html :contentReference[oaicite:10]{index=10}
       router.push('/modul');
       return;
     }
@@ -248,10 +238,9 @@ export default function HomePageTab() {
       {/* HEADER */}
       <SafeAreaView edges={['top']} style={homeStyles.dashboardHeader}>
         <View style={homeStyles.headerInnerOneRow}>
-          {/* kiri kosong supaya title bener-bener center */}
           <View style={{ width: 44 }} />
 
-          {/* Logo + Title */}
+          {/* Logo */}
           <View style={homeStyles.headerCenter}>
             <Image source={require('../../assets/images/4.png')} style={homeStyles.logoImg} />
             <Text style={homeStyles.logoText}>PhysicsLab Virtual</Text>
@@ -277,7 +266,7 @@ export default function HomePageTab() {
               yang lengkap
             </Text>
 
-            {/* “particles” versi RN (tanpa animasi CSS tapi posisi sama konsepnya) */}
+            {/* Particles */}
             <View pointerEvents="none" style={homeStyles.particles}>
               <View style={[homeStyles.particle, homeStyles.p1]} />
               <View style={[homeStyles.particle, homeStyles.p2]} />
@@ -330,7 +319,7 @@ export default function HomePageTab() {
 
           {/* CONTENT GRID */}
           <FlatList
-            key={numColumns} // biar rerender saat ganti kolom
+            key={numColumns}
             data={data}
             numColumns={numColumns}
             scrollEnabled={false}
@@ -343,7 +332,7 @@ export default function HomePageTab() {
 
               return (
                 <View style={[homeStyles.card, numColumns > 1 ? homeStyles.cardHalf : null]}>
-                  <LinearGradient colors={GRADIENTS.primary} style={homeStyles.cardImage}>
+                  <LinearGradient colors={GRADIENTS.primary1} style={homeStyles.cardImage}>
                     <Text style={homeStyles.cardIcon}>{item.icon}</Text>
                   </LinearGradient>
 
@@ -364,22 +353,22 @@ export default function HomePageTab() {
             }}
           />
 
-          {/* FOOTER (sesuai homepage.html, bagian bottom saja) */}
-          <View style={homeStyles.footer}>
+          {/* FOOTER */}
+          {/* <View style={homeStyles.footer}>
             <View style={homeStyles.footerAnimatedLine} />
             <LinearGradient colors={GRADIENTS.footer} style={homeStyles.footerBox}>
               <Text style={homeStyles.footerText}>
-                © 2025 Created with passion and creativity by Aulia Azka. All rights reserved.
+                © 2025 Created with passion and creativity by Aulia & Sonya. All rights reserved.
               </Text>
               <Text style={homeStyles.footerVersion}>
                 Version 1.0 - Newton&apos;s Second Law Simulator
               </Text>
             </LinearGradient>
-          </View>
+          </View> */}
         </View>
       </ScrollView>
 
-      {/* COMING SOON MODAL */}
+      {/* COMING SOON */}
       <Modal transparent visible={comingSoonOpen} animationType="fade" onRequestClose={closeComingSoon}>
         <Pressable style={homeStyles.modalOverlay} onPress={closeComingSoon}>
           <Pressable style={homeStyles.modalCard} onPress={() => {}}>

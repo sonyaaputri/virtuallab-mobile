@@ -45,13 +45,10 @@ export async function apiCall(endpoint: string, options: ApiCallOptions = {}) {
 
   try {
     const response = await fetch(url, config);
-
-    // kadang backend balikin non-json saat error tertentu
     const text = await response.text();
     const data = text ? safeJsonParse(text) : null;
 
     if (!response.ok) {
-      // web version kamu pakai data.detail untuk error :contentReference[oaicite:2]{index=2}
       const message =
         (data && (data.detail || data.message)) ||
         `Request gagal (HTTP ${response.status})`;
@@ -60,7 +57,6 @@ export async function apiCall(endpoint: string, options: ApiCallOptions = {}) {
 
     return data;
   } catch (error: any) {
-    // error jaringan / CORS (di RN biasanya: TypeError: Network request failed)
     if (error?.name === 'TypeError') {
       throw new Error('Tidak dapat terhubung ke server. Periksa koneksi & BASE_URL.');
     }

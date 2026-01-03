@@ -3,6 +3,8 @@ import { StyleSheet } from 'react-native';
 export const COLORS = {
   purple: '#8441A4',
   pink: '#FF5B94',
+  purpleMuda: '#F9E9FF',
+  pinkMuda: '#F6D7E3',
   text: '#333',
   muted: '#666',
   bg: '#f8f9fa',
@@ -13,6 +15,7 @@ export const COLORS = {
 
 export const GRADIENTS = {
   primary: [COLORS.purple, COLORS.pink] as const,
+  primary1: [COLORS.purpleMuda, COLORS.pinkMuda] as const,
   footer: [COLORS.footerStart, COLORS.footerEnd] as const,
 };
 
@@ -37,7 +40,6 @@ dashboardHeader: {
   shadowOffset: { width: 0, height: 2 },
   elevation: 3,
 },
-
 
   headerInnerOneRow: {
   paddingHorizontal: 16,
@@ -206,8 +208,7 @@ headerCenter: {
   },
 
   navTabActive: {
-    // active: gradient feel di web → kita pakai background solid di tab, tetap warna sama
-    backgroundColor: COLORS.purple,
+    backgroundColor: COLORS.purple, // Tab
     shadowColor: COLORS.purple,
     shadowOpacity: 0.3,
     shadowRadius: 15,
@@ -306,35 +307,35 @@ headerCenter: {
     fontSize: 16,
   },
 
-  footer: {
-    marginTop: 30,
-    borderRadius: 15,
-    overflow: 'hidden',
-  },
+  // footer: {
+  //   marginTop: 30,
+  //   borderRadius: 15,
+  //   overflow: 'hidden',
+  // },
 
-  footerAnimatedLine: {
-    height: 4,
-    backgroundColor: COLORS.pink,
-  },
+  // footerAnimatedLine: {
+  //   height: 4,
+  //   backgroundColor: COLORS.pink,
+  // },
 
-  footerBox: {
-    paddingVertical: 20,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-  },
+  // footerBox: {`
+  //   paddingVertical: 20,
+  //   paddingHorizontal: 20,
+  //   alignItems: 'center',
+  // },
 
-  footerText: {
-    color: COLORS.white,
-    opacity: 0.85,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
+  // footerText: {
+  //   color: COLORS.white,
+  //   opacity: 0.85,
+  //   textAlign: 'center',
+  //   lineHeight: 20,
+  // },
 
-  footerVersion: {
-    marginTop: 5,
-    color: COLORS.white,
-    fontSize: 14,
-  },
+  // footerVersion: {
+  //   marginTop: 5,
+  //   color: COLORS.white,
+  //   fontSize: 14,
+  // },
 
   modalOverlay: {
     flex: 1,

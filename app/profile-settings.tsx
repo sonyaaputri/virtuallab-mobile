@@ -21,8 +21,8 @@ type CurrentUser = {
   name?: string;
   email?: string;
   initials?: string;
-  avatar?: string; // di mobile kamu pakai avatar (initials) juga
-  photo?: string; // base64/data url dari web
+  avatar?: string;
+  photo?: string;
 };
 
 function makeInitials(name: string) {
@@ -43,7 +43,7 @@ export default function ProfileSettingsScreen() {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null); // data:image/... base64
+  const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null);
 
   const avatarText = useMemo(() => {
     const name = fullName || user?.name || 'Aulia User';
@@ -51,7 +51,6 @@ export default function ProfileSettingsScreen() {
   }, [fullName, user]);
 
   useEffect(() => {
-    // web: initializeUserInfo() ambil currentUser, kalau kosong -> redirect index :contentReference[oaicite:2]{index=2}
     (async () => {
       const userStr = await AsyncStorage.getItem('currentUser');
       if (!userStr) {
@@ -64,8 +63,6 @@ export default function ProfileSettingsScreen() {
 
         setFullName(u?.name || '');
         setEmail(u?.email || '');
-
-        // web: kalau user.photo ada, tampilkan photo, else tampilkan initials :contentReference[oaicite:3]{index=3}
         setPhotoDataUrl(u?.photo || null);
       } catch {
         router.replace('/');
@@ -74,18 +71,15 @@ export default function ProfileSettingsScreen() {
   }, [router]);
 
   const goBack = () => {
-    // web: goBackToDashboard() -> homepage :contentReference[oaicite:4]{index=4}
     if (router.canGoBack()) router.back();
     else router.replace('/(tabs)' as any);
   };
 
   const onCancel = () => {
-    // web: cancel -> homepage :contentReference[oaicite:5]{index=5}
     router.replace('/(tabs)' as any);
   };
 
   const onLogout = () => {
-    // web: confirm logout, hapus currentUser dan redirect :contentReference[oaicite:6]{index=6}
     Alert.alert('Logout', 'Apakah Anda yakin ingin keluar dari akun?', [
       { text: 'Batal', style: 'cancel' },
       {
@@ -93,7 +87,7 @@ export default function ProfileSettingsScreen() {
         style: 'destructive',
         onPress: async () => {
           await AsyncStorage.removeItem('currentUser');
-          await AsyncStorage.removeItem('access_token'); // biar bersih
+          await AsyncStorage.removeItem('access_token');
           router.replace('/');
         },
       },
@@ -101,7 +95,6 @@ export default function ProfileSettingsScreen() {
   };
 
   const pickPhoto = async () => {
-    // web: klik edit -> pilih file -> convert base64 :contentReference[oaicite:7]{index=7} :contentReference[oaicite:8]{index=8}
     const perm = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!perm.granted) {
       Alert.alert('Izin diperlukan', 'Izinkan akses galeri untuk memilih foto.');
@@ -130,13 +123,11 @@ export default function ProfileSettingsScreen() {
   };
 
   const handleUpdate = async () => {
-    // web: validasi password cocok :contentReference[oaicite:9]{index=9}
     if (newPassword && newPassword !== confirmPassword) {
       Alert.alert('Gagal', 'Password tidak cocok!');
       return;
     }
 
-    // web: token access_token harus ada :contentReference[oaicite:10]{index=10}
     const token = await AsyncStorage.getItem('access_token');
     if (!token) {
       Alert.alert('Sesi habis', 'Token tidak ditemukan, silakan login ulang.');
@@ -151,13 +142,10 @@ export default function ProfileSettingsScreen() {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
-        // web: kirim name, email, photo (base64) :contentReference[oaicite:11]{index=11}
         body: JSON.stringify({
           name: fullName,
           email,
           photo: photoDataUrl,
-          // catatan: web kamu tidak mengirim password ke endpoint profile.
-          // jadi kita juga tidak mengirim password agar tidak mengubah logika backend.
         }),
       });
 
@@ -167,7 +155,6 @@ export default function ProfileSettingsScreen() {
         throw new Error(data?.detail || 'Update gagal');
       }
 
-      // web: simpan user yang dikembalikan ke currentUser :contentReference[oaicite:12]{index=12}
       const updatedUser: CurrentUser = data?.user || {
         ...user,
         name: fullName,
@@ -191,7 +178,7 @@ export default function ProfileSettingsScreen() {
 
   return (
     <View style={profileStyles.screen}>
-      {/* HEADER (1 baris, seperti modul/quiz) */}
+      {/* HEADER */}
       <SafeAreaView edges={['top']} style={profileStyles.header}>
         <View style={profileStyles.headerInnerOneRow}>
           <Pressable onPress={goBack} style={profileStyles.backIconBtn}>
@@ -203,7 +190,7 @@ export default function ProfileSettingsScreen() {
             <Text style={profileStyles.logoText}>PhysicsLab Virtual</Text>
           </View>
 
-          <Pressable onPress={() => { /* sudah di profile */ }}>
+          <Pressable onPress={() => {}}>
             <LinearGradient colors={GRADIENTS.primary} style={profileStyles.avatarSmall}>
               <Text style={profileStyles.avatarSmallText}>{avatarText}</Text>
             </LinearGradient>
@@ -214,27 +201,27 @@ export default function ProfileSettingsScreen() {
       <ScrollView contentContainerStyle={profileStyles.scrollContent}>
         <View style={profileStyles.container}>
           <View style={profileStyles.profileContainer}>
-            {/* Decorative section (gambar + bubble) */}
-            <View style={profileStyles.decorativeSection}>
+            {/* Gambar */}
+            {/* <View style={profileStyles.decorativeSection}>
               <View style={profileStyles.imageWrapper}>
                 <Image
                   source={require('../assets/images/1.png')}
                   style={profileStyles.decorativeImage}
-                />
+                /> */}
 
-                {/* bubble-bubble dekorasi (tanpa animasi web) :contentReference[oaicite:13]{index=13} */}
-                <View style={[profileStyles.bubble, profileStyles.bubbleTop]} />
+                {/* Bubble */}
+                {/* <View style={[profileStyles.bubble, profileStyles.bubbleTop]} />
                 <View style={[profileStyles.bubble, profileStyles.bubbleBottom]} />
                 <View style={[profileStyles.bubble, profileStyles.bubbleLeft]} />
                 <View style={[profileStyles.bubble, profileStyles.bubbleRight]} />
                 <View style={[profileStyles.bubble, profileStyles.bubbleTopLeft]} />
                 <View style={[profileStyles.bubble, profileStyles.bubbleBottomRight]} />
               </View>
-            </View>
+            </View> */}
 
             {/* Form section */}
             <View style={profileStyles.formSection}>
-              {/* Profile photo display + edit */}
+              {/* Profile photo*/}
               <View style={profileStyles.photoDisplay}>
                 <LinearGradient colors={GRADIENTS.primary} style={profileStyles.photoRing}>
                   {photoDataUrl ? (
@@ -308,15 +295,13 @@ export default function ProfileSettingsScreen() {
                   </Pressable>
                 </View>
 
-                {/* Logout di profile (sesuai permintaan kamu) */}
+                {/* Logout */}
                 <Pressable onPress={onLogout} style={profileStyles.logoutBtn}>
                   <Text style={profileStyles.logoutBtnText}>Logout</Text>
                 </Pressable>
               </View>
             </View>
           </View>
-
-          {/* Footer: sengaja tidak ada */}
         </View>
       </ScrollView>
     </View>

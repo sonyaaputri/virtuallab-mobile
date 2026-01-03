@@ -57,7 +57,7 @@ export const buttonStyles = StyleSheet.create({
   btnSecondary: {
     backgroundColor: 'transparent',
     borderWidth: 2,
-    borderColor: '#6A278B',
+    borderColor: '#8441A4',
   },
   btnSecondaryText: {
     color: '#ffffff',
@@ -195,7 +195,6 @@ heroParagraph: {
     paddingHorizontal: 20,
     borderRadius: 15,
     backgroundColor: '#f8f9fa',
-    // shadow
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 30,

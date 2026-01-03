@@ -51,7 +51,7 @@ function RootLayoutNav() {
         <Stack.Screen name="modul" options={{ headerShown: false }} />
         <Stack.Screen name="quiz" options={{ headerShown: false }} />
         <Stack.Screen name="simulation" options={{ headerShown: false }} />
-        <Stack.Screen name="games" options={{ title: 'Games', tabBarIcon: ({ color }) => <TabBarIcon name="gamepad" color={color} /> }} />
+        <Stack.Screen name="games" options={{ headerShown:false, title: 'Games'}} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack>
     </ThemeProvider>

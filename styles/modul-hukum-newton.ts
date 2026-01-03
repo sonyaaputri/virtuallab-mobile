@@ -11,6 +11,7 @@ export const COLORS = {
 
 export const GRADIENTS = {
   primary: [COLORS.purple, COLORS.pink] as const,
+  primary1: [COLORS.purple, COLORS.purple] as const,
 };
 
 export const modulStyles = StyleSheet.create({
@@ -28,7 +29,7 @@ export const modulStyles = StyleSheet.create({
 
   header: {
     backgroundColor: COLORS.white,
-    paddingVertical: 20,
+    paddingVertical: 0,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 10,
@@ -42,40 +43,40 @@ export const modulStyles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   
-headerInnerOneRow: {
-  paddingHorizontal: 16,
-  paddingTop: 12,
-  paddingBottom: 12,
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-},
+  headerInnerOneRow: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
 
-headerCenter: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  gap: 10 as any,
-  flex: 1,
-  justifyContent: 'center',
-},
+  headerCenter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10 as any,
+    flex: 1,
+    justifyContent: 'center',
+  },
 
-backIconBtn: {
-  width: 44,
-  height: 44,
-  borderRadius: 22,
-  borderWidth: 1,
-  borderColor: 'rgba(132,65,164,0.2)',
-  backgroundColor: 'rgba(132,65,164,0.1)',
-  alignItems: 'center',
-  justifyContent: 'center',
-},
+  backIconBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: 'rgba(132,65,164,0.2)',
+    backgroundColor: 'rgba(132,65,164,0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 
-backIcon: {
-  fontSize: 34,
-  lineHeight: 34,
-  color: COLORS.purple,
-  fontWeight: '700',
-},
+  backIcon: {
+    fontSize: 34,
+    lineHeight: 34,
+    color: COLORS.purple,
+    fontWeight: '700',
+  },
 
   backButton: {
     paddingVertical: 12,

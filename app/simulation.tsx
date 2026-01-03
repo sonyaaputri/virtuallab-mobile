@@ -49,7 +49,6 @@ export default function SimulationNewtonScreen() {
     else router.replace('/(tabs)' as any);
   };
 
-  // 1) Load HTML/CSS/JS dari assets .txt
   useEffect(() => {
     (async () => {
       const [htmlText, cssText, jsText] = await Promise.all([
@@ -58,10 +57,8 @@ export default function SimulationNewtonScreen() {
         readBundledText(require('../assets/web/simulation/simulation-hukum-newton.js.txt')),
       ]);
 
-      // buang footer (kamu minta jangan pakai footer)
       let patched = htmlText.replace(/<footer[\s\S]*?<\/footer>/gi, '');
 
-      // inline CSS
       patched = patched.replace(
         /<link[^>]*rel=["']stylesheet["'][^>]*>/gi,
         `<style>\n${cssText}\n</style>`
@@ -80,14 +77,11 @@ export default function SimulationNewtonScreen() {
 
         patched = patched.replace('</head>', `${hideHeaderCss}\n</head>`);
 
-
-      // inline JS (replace script src *.js)
       patched = patched.replace(
         /<script[^>]*src=["'][^"']+\.js["'][^>]*><\/script>/gi,
         `<script>\n${jsText}\n</script>`
       );
 
-      // fallback kalau link/script gak ketemu
       if (!patched.includes('<style>')) {
         patched = patched.replace('</head>', `<style>\n${cssText}\n</style>\n</head>`);
       }
@@ -95,7 +89,6 @@ export default function SimulationNewtonScreen() {
         patched = patched.replace('</body>', `<script>\n${jsText}\n</script>\n</body>`);
       }
 
-      // penting: pastikan ada body (buat jaga-jaga)
       setHtml(patched);
     })();
   }, []);
@@ -148,8 +141,6 @@ export default function SimulationNewtonScreen() {
     `;
     }, []);
 
-
-  // 3) Setelah halaman keload: PAKSA init NewtonLawSimulation kalau belum kebentuk
   const injectedAfterLoad = useMemo(() => {
     return `
       (function(){
@@ -173,8 +164,6 @@ export default function SimulationNewtonScreen() {
 
     if (msg === 'GO_BACK') goBack();
     if (msg === 'OPEN_PROFILE') router.push('/profile-settings');
-
-    // kalau mau lihat error JS dari WebView (sementara)
     if (typeof msg === 'string' && msg.startsWith('WEB_ERROR:')) {
       console.log(msg);
     }

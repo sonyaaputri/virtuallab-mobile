@@ -45,7 +45,6 @@ const physicsQuestions: QuizQ[] = [
   { q: 'Hubungan antara massa dan percepatan dalam Hukum II Newton adalah...', o: ['Berbanding lurus', 'Berbanding terbalik', 'Eksponensial', 'Tidak ada hubungan'], c: 1 },
   { q: 'Gaya 100 N bekerja pada benda bermassa 25 kg. Percepatannya adalah...', o: ['2 m/s²', '4 m/s²', '5 m/s²', '25 m/s²'], c: 1 },
 ];
-// (Ini setara dengan physicsQuestions di web) :contentReference[oaicite:4]{index=4}
 
 function clamp(n: number, a: number, b: number) {
   return Math.max(a, Math.min(b, n));
@@ -63,7 +62,7 @@ function collide(a: Rect, b: Rect) {
 export default function GamesScreen() {
   const router = useRouter();
 
-  // user header
+  // User Header
   const [user, setUser] = useState<CurrentUser | null>(null);
   const avatarText = useMemo(() => user?.avatar || user?.initials || 'U', [user]);
 
@@ -84,7 +83,6 @@ export default function GamesScreen() {
     else router.replace('/(tabs)' as any);
   };
 
-  // ===== Game State (mengikuti web) :contentReference[oaicite:5]{index=5}
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
   const [nextQuizScore, setNextQuizScore] = useState(50);
@@ -96,7 +94,7 @@ export default function GamesScreen() {
   const asteroidTimerRef = useRef(0);
   const asteroidDelayRef = useRef(60);
 
-  const [renderTick, setRenderTick] = useState(0); // supaya re-render entity
+  const [renderTick, setRenderTick] = useState(0);
   const rafRef = useRef<number | null>(null);
   const lastTRef = useRef<number>(0);
 
@@ -107,13 +105,12 @@ export default function GamesScreen() {
   const moveLeftHeld = useRef(false);
   const moveRightHeld = useRef(false);
 
-  // Quiz modal
+  // Quiz
   const [quizVisible, setQuizVisible] = useState(false);
   const [quizIdx, setQuizIdx] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<{ text: string; color: string } | null>(null);
   const answeredSet = useRef<number[]>([]);
 
-  // scale stage to screen (mirip resizeCanvas web) :contentReference[oaicite:6]{index=6}
   const [stageSize, setStageSize] = useState<{ w: number; h: number }>({
     w: Dimensions.get('window').width - 32 - 20,
     h: (Dimensions.get('window').width - 32 - 20) * (BASE_SIZE.h / BASE_SIZE.w),
@@ -140,7 +137,6 @@ export default function GamesScreen() {
       height: 16,
       speed: 8,
     });
-    // (web: playShootSound()) :contentReference[oaicite:7]{index=7}
   }
 
   function spawnAsteroid() {
@@ -152,13 +148,10 @@ export default function GamesScreen() {
       height: size,
       speed: 2 + Math.random() * 3,
     });
-    // (web spawn) :contentReference[oaicite:8]{index=8}
   }
 
   function openQuiz() {
     setGamePaused(true);
-
-    // pilih soal yg belum ditanya (mirip web) :contentReference[oaicite:9]{index=9}
     let available = physicsQuestions
       .map((_, idx) => idx)
       .filter((idx) => !answeredSet.current.includes(idx));
@@ -177,7 +170,6 @@ export default function GamesScreen() {
   function endGame() {
     setGameOver(true);
     setGamePaused(true);
-    // (web: playGameOverSound, show gameOver modal) :contentReference[oaicite:10]{index=10}
   }
 
   function restartGame() {
@@ -203,28 +195,23 @@ export default function GamesScreen() {
   }
 
   function step(dtMs: number) {
-    const dt = Math.min(dtMs / 16.67, 2.2); // skala mirip frame rate
-
-    // update player (web pakai ArrowLeft/Right) :contentReference[oaicite:11]{index=11}
+    const dt = Math.min(dtMs / 16.67, 2.2);
     const p = playerRef.current;
     const speed = 6 * dt;
     if (moveLeftHeld.current) p.x -= speed;
     if (moveRightHeld.current) p.x += speed;
     p.x = clamp(p.x, 0, BASE_SIZE.w - p.width);
 
-    // bullets update :contentReference[oaicite:12]{index=12}
     bulletsRef.current = bulletsRef.current
       .map((b) => ({ ...b, y: b.y - b.speed * dt }))
       .filter((b) => b.y > -b.height);
 
-    // asteroids update + collision with player :contentReference[oaicite:13]{index=13}
     const newAsteroids: Asteroid[] = [];
     for (const a of asteroidsRef.current) {
       const nextA = { ...a, y: a.y + a.speed * dt };
       if (nextA.y > BASE_SIZE.h) continue;
 
       if (collide(p, nextA)) {
-        // hit player: lives-- :contentReference[oaicite:14]{index=14}
         setLives((lv) => {
           const after = lv - 1;
           if (after <= 0) endGame();
@@ -236,7 +223,6 @@ export default function GamesScreen() {
     }
     asteroidsRef.current = newAsteroids;
 
-    // bullet vs asteroid collisions :contentReference[oaicite:15]{index=15}
     const bullets = bulletsRef.current.slice();
     const asts = asteroidsRef.current.slice();
 
@@ -260,7 +246,6 @@ export default function GamesScreen() {
     bulletsRef.current = bullets;
     asteroidsRef.current = asts;
 
-    // spawn asteroids :contentReference[oaicite:16]{index=16}
     asteroidTimerRef.current += 1 * dt;
     if (asteroidTimerRef.current > asteroidDelayRef.current) {
       spawnAsteroid();
@@ -290,7 +275,6 @@ export default function GamesScreen() {
       rafRef.current = null;
       lastTRef.current = 0;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gameOver, gamePaused]);
 
   function chooseAnswer(optIndex: number) {
@@ -301,8 +285,6 @@ export default function GamesScreen() {
       setFeedback({ text: '✅ Benar! Lanjutkan permainan!', color: '#2e7d32' });
       answeredSet.current.push(quizIdx);
       setTotalQuizAnswered((n) => n + 1);
-
-      // web: close modal, nextQuizScore += interval (50) :contentReference[oaicite:17]{index=17}
       setTimeout(() => {
         setQuizVisible(false);
         setGamePaused(false);
@@ -331,14 +313,13 @@ export default function GamesScreen() {
     }
   }
 
-  // Derived render arrays
   const player = playerRef.current;
   const bullets = bulletsRef.current;
   const asteroids = asteroidsRef.current;
 
   return (
     <View style={gamesStyles.screen}>
-      {/* HEADER (tanpa footer) - meniru struktur header web :contentReference[oaicite:18]{index=18} */}
+      {/* HEADER */}
       <SafeAreaView edges={['top']} style={gamesStyles.header}>
         <View style={gamesStyles.headerInner}>
           <Pressable onPress={goBack} style={gamesStyles.backBtn}>
@@ -427,7 +408,7 @@ export default function GamesScreen() {
           </View>
         </View>
 
-        <Text style={gamesStyles.controlsHint}>← → untuk bergerak • Tombol 🔫 untuk menembak</Text>
+        <Text style={gamesStyles.controlsHint}> ← → untuk bergerak • Tombol 🔫 untuk menembak</Text>
 
         {/* TOUCH CONTROLS */}
         <View style={gamesStyles.touchControls}>
@@ -456,7 +437,7 @@ export default function GamesScreen() {
         </View>
       </View>
 
-      {/* QUIZ MODAL (setara quizModal web) :contentReference[oaicite:19]{index=19} */}
+      {/* QUIZ */}
       <Modal visible={quizVisible} transparent animationType="fade">
         <View style={gamesStyles.modalBackdrop}>
           <View style={gamesStyles.modalCard}>
@@ -489,7 +470,7 @@ export default function GamesScreen() {
         </View>
       </Modal>
 
-      {/* GAME OVER MODAL (setara gameOver web) :contentReference[oaicite:20]{index=20} */}
+      {/* GAME OVER */}
       <Modal visible={gameOver} transparent animationType="fade">
         <View style={gamesStyles.modalBackdrop}>
           <View style={gamesStyles.modalCard}>

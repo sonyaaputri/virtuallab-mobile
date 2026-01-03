@@ -26,7 +26,7 @@ export const quizStyles = StyleSheet.create({
 
   header: {
     backgroundColor: COLORS.white,
-    paddingVertical: 20,
+    paddingVertical: 0,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 10,
@@ -38,73 +38,103 @@ export const quizStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 10 as any,
   },
   
-headerInnerOneRow: {
-  paddingHorizontal: 16,
-  paddingTop: 12,
-  paddingBottom: 12,
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-},
+  headerInnerOneRow: {
+    paddingHorizontal: 16,
+    paddingTop: 50,
+    paddingBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
 
-headerCenter: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  gap: 10 as any,
-  flex: 1,
-  justifyContent: 'center',
-},
+  headerCenter: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10 as any,
+    flex: 1,
+    justifyContent: 'center',
+  },
 
-backIconBtn: {
-  width: 44,
-  height: 44,
-  borderRadius: 22,
-  borderWidth: 1,
-  borderColor: 'rgba(132,65,164,0.2)',
-  backgroundColor: 'rgba(132,65,164,0.1)',
-  alignItems: 'center',
-  justifyContent: 'center',
-},
+  backIconBtn: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    borderColor: 'rgba(132,65,164,0.2)',
+    backgroundColor: 'rgba(132,65,164,0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 
-backIcon: {
-  fontSize: 34,
-  lineHeight: 34,
-  color: COLORS.purple,
-  fontWeight: '700',
-},
+  backIcon: {
+    fontSize: 34,
+    lineHeight: 34,
+    color: COLORS.purple,
+    fontWeight: '700',
+  },
 
   backButton: {
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 50,
     borderWidth: 1,
-    borderColor: 'rgba(132, 65, 164, 0.2)',
-    backgroundColor: 'rgba(132, 65, 164, 0.1)',
+    borderColor: 'rgba(132,65,164,0.2)',
+    backgroundColor: 'rgba(132,65,164,0.1)',
     minHeight: 44,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
-  backButtonText: { color: COLORS.purple, fontSize: 16, fontWeight: '600' },
+  backButtonText: {
+    color: COLORS.purple,
+    fontSize: 16,
+    fontWeight: '600',
+  },
 
-  logoRow: { flexDirection: 'row', alignItems: 'center', flexShrink: 1 },
-  logoImg: { width: 40, height: 40, marginRight: 10, resizeMode: 'contain' },
-  logoText: { fontSize: 18, fontWeight: 'bold', color: COLORS.purple, flexShrink: 1 },
+  logoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flexShrink: 1,
+  },
 
-  userRow: { flexDirection: 'row', alignItems: 'center', gap: 12 as any },
-  userName: { color: COLORS.purple },
+  logoImg: {
+    width: 40,
+    height: 40,
+    marginRight: 10,
+    resizeMode: 'contain',
+  },
+
+  logoText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.purple,
+    flexShrink: 1,
+  },
+
+  userRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12 as any,
+  },
+
+  userName: {
+    color: COLORS.text,
+  },
 
   avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  avatarText: { color: COLORS.white, fontWeight: 'bold' },
+
+  avatarText: {
+    color: COLORS.white,
+    fontWeight: 'bold',
+  },
 
   btnSecondarySmall: {
     paddingVertical: 8,
@@ -117,9 +147,16 @@ backIcon: {
     alignItems: 'center',
     justifyContent: 'center',
   },
-  btnSecondarySmallText: { color: COLORS.purple, fontWeight: '600' },
 
-  scrollContent: { paddingVertical: 30, paddingBottom: 60 },
+  btnSecondarySmallText: {
+    color: COLORS.purple,
+    fontWeight: '600',
+  },
+
+  scrollContent: {
+    paddingVertical: 30,
+    paddingBottom: 20,
+  },
 
   quizSection: {
     backgroundColor: COLORS.white,
@@ -135,13 +172,13 @@ backIcon: {
   quizHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 15 as any,
+    gap: 1 as any,
     marginBottom: 15,
   },
 
   quizIcon: { fontSize: 28, color: COLORS.purple },
-  quizTitle: { fontSize: 20, fontWeight: 'bold', color: COLORS.purple },
-  quizSubtitle: { color: COLORS.muted, marginTop: 2 },
+  quizTitle: { fontSize: 18, fontWeight: 'bold', color: COLORS.purple },
+  quizSubtitle: { fontSize: 12, color: COLORS.muted, marginTop: 2 },
 
   musicToggle: {
     width: 46,
@@ -173,7 +210,7 @@ backIcon: {
     backgroundColor: '#ddd',
     borderRadius: 6,
     overflow: 'hidden',
-    marginRight: 15,
+    marginRight: -15,
   },
 
   progressFill: {
@@ -248,14 +285,14 @@ backIcon: {
     minHeight: 44,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: COLORS.purple, // gradient di tombol web, di RN tetap warna utama biar konsisten tanpa ribet
+    backgroundColor: COLORS.purple,
   },
 
   btnQuizDisabled: {
     backgroundColor: '#ccc',
   },
 
-  btnQuizText: { color: COLORS.white, fontWeight: '600' },
+  btnQuizText: { color: COLORS.white, fontWeight: '500', fontSize: 13 },
 
   quizResults: {
     alignItems: 'center',

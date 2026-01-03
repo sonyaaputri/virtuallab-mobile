@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   passwordInput: {
     width: '100%',
     padding: 12,
-    paddingRight: 40,
+    paddingRight: 50, // Ubah dari 40 ke 50
     borderWidth: 2,
     borderColor: '#e0e0e0',
     borderRadius: 8,
@@ -202,15 +202,19 @@ const styles = StyleSheet.create({
   },
   passwordToggle: {
     position: 'absolute',
-    right: 10,
-    top: '50%',
-    transform: [{ translateY: -10 }],
-    width: 20,
-    height: 20,
+    right: 0, // Ubah dari 10 ke 0
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 50, // Lebar area touchable lebih besar
+    height: '100%',
+    // Hapus transform: [{ translateY: -10 }]
   },
   passwordIcon: {
-    width: 20,
-    height: 20,
+    width: 22, // Sedikit lebih besar
+    height: 22,
+    resizeMode: 'contain',
   },
   btn: {
     width: '100%',

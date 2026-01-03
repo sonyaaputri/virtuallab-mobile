@@ -7,6 +7,7 @@ export const COLORS = {
   muted: '#555',
   purple: '#8441A4',
   pink: '#FF5B94',
+  red: '#FF3F42',
 };
 
 export const GRADIENTS = {
@@ -16,7 +17,6 @@ export const GRADIENTS = {
 export const profileStyles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: COLORS.bg },
 
-  // Header simple 1 baris (ikuti modul/quiz/home)
   header: {
     backgroundColor: COLORS.white,
     borderBottomWidth: 1,
@@ -83,7 +83,6 @@ export const profileStyles = StyleSheet.create({
     gap: 16 as any,
   },
 
-  // Decorative
   decorativeSection: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -115,7 +114,6 @@ export const profileStyles = StyleSheet.create({
   bubbleTopLeft: { width: 14, height: 14, backgroundColor: '#F59E0B', left: 22, top: 24 },
   bubbleBottomRight: { width: 24, height: 24, backgroundColor: '#10B981', right: 18, bottom: 14 },
 
-  // Form section
   formSection: {
     backgroundColor: COLORS.white,
     padding: 20,
@@ -236,14 +234,15 @@ export const profileStyles = StyleSheet.create({
   cancelBtnText: { color: COLORS.pink, fontWeight: '700' },
 
   logoutBtn: {
-    marginTop: 16,
+    marginTop: 20,
     borderRadius: 8,
     borderWidth: 2,
-    borderColor: COLORS.purple,
+    borderColor: COLORS.red,
+    backgroundColor: COLORS.red,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 44,
     paddingVertical: 12,
   },
-  logoutBtnText: { color: COLORS.purple, fontWeight: '700' },
+  logoutBtnText: { color: COLORS.white, fontWeight: '700' },
 });

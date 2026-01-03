@@ -13,7 +13,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: '#ff5b94',
-        headerShown: false, // ✅ ini yang matiin header ungu "Home"
+        headerShown: false,
         tabBarStyle: {
           backgroundColor: '#ffffff',
         },

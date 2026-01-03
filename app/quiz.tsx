@@ -124,7 +124,6 @@ export default function QuizScreen() {
   const percentage = Math.round((correctCount / total) * 100);
 
   useEffect(() => {
-    // web: initializeUserInfo() ambil currentUser :contentReference[oaicite:2]{index=2}
     (async () => {
       const userStr = await AsyncStorage.getItem('currentUser');
       if (!userStr) {
@@ -143,7 +142,6 @@ export default function QuizScreen() {
   }, [router]);
 
   useEffect(() => {
-    // web: localStorage quizMusicEnabled :contentReference[oaicite:3]{index=3}
     (async () => {
       const v = await AsyncStorage.getItem('quizMusicEnabled');
       setMusicEnabled(v === 'true');
@@ -151,7 +149,6 @@ export default function QuizScreen() {
   }, []);
 
   useEffect(() => {
-    // cleanup sound
     return () => {
       if (sound) {
         sound.unloadAsync().catch(() => {});
@@ -170,7 +167,6 @@ export default function QuizScreen() {
   const ensureSoundLoaded = async () => {
     if (sound) return sound;
     const { sound: s } = await Audio.Sound.createAsync(
-      // pastikan file ada di assets kamu: assets/quiz-music.wav
       require('../assets//images/quiz-music.wav'),
       { isLooping: true, volume: 1.0 }
     );
@@ -184,7 +180,6 @@ export default function QuizScreen() {
       try {
         await s.playAsync();
       } catch {
-        // kalau gagal, biarin (mirip web: autoplay prevented)
       }
     } else {
       await stopMusic();
@@ -192,11 +187,9 @@ export default function QuizScreen() {
   };
 
   useEffect(() => {
-    // tiap toggle berubah, apply
     (async () => {
       await applyMusicState(musicEnabled);
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [musicEnabled]);
 
   const onToggleMusic = async () => {
@@ -206,7 +199,6 @@ export default function QuizScreen() {
   };
 
   const onBackToDashboard = () => {
-    // web: confirm keluar dari kuis :contentReference[oaicite:4]{index=4}
     Alert.alert('Keluar', 'Apakah Anda yakin ingin keluar dari kuis?', [
       { text: 'Batal', style: 'cancel' },
       {
@@ -221,7 +213,6 @@ export default function QuizScreen() {
   };
 
   const onLogout = () => {
-    // web: confirm logout :contentReference[oaicite:5]{index=5}
     Alert.alert('Logout', 'Apakah Anda yakin ingin keluar dari akun?', [
       { text: 'Batal', style: 'cancel' },
       {
@@ -257,9 +248,8 @@ export default function QuizScreen() {
       setCurrentIndex((i) => i + 1);
       return;
     }
-    // submit
     setShowResults(true);
-    await stopMusic(); // web: stop audio saat results :contentReference[oaicite:6]{index=6}
+    await stopMusic();
   };
 
   const onRestart = () => {
@@ -267,7 +257,6 @@ export default function QuizScreen() {
     setCurrentIndex(0);
     setShowReview(false);
     setShowResults(false);
-    // music state tetap sesuai toggle
   };
 
   const onOpenReview = () => {
@@ -282,7 +271,7 @@ export default function QuizScreen() {
 
   return (
     <View style={quizStyles.screen}>
-        {/* HEADER (simple mobile, sama seperti modul) */}
+        {/* HEADER */}
     <View style={quizStyles.header}>
     <View style={quizStyles.headerInnerOneRow}>
         {/* Back */}
@@ -290,13 +279,13 @@ export default function QuizScreen() {
         <Text style={quizStyles.backIcon}>‹</Text>
         </Pressable>
 
-        {/* Logo + Title */}
+        {/* Logo */}
         <View style={quizStyles.headerCenter}>
         <Image source={require('../assets/images/4.png')} style={quizStyles.logoImg} />
         <Text style={quizStyles.logoText}>PhysicsLab Virtual</Text>
         </View>
 
-        {/* Profile Avatar (logout nanti di profile) */}
+        {/* Profile Avatar */}
         <Pressable onPress={() => router.push('/profile-settings')}>
         <LinearGradient colors={GRADIENTS.primary} style={quizStyles.avatar}>
             <Text style={quizStyles.avatarText}>{userAvatar}</Text>
@@ -311,7 +300,7 @@ export default function QuizScreen() {
           <View style={quizStyles.quizSection}>
             {/* QUIZ HEADER */}
             <View style={quizStyles.quizHeader}>
-              <Text style={quizStyles.quizIcon}>❓</Text>
+              <Text style={quizStyles.quizIcon}></Text>
 
               <View style={{ flex: 1 }}>
                 <Text style={quizStyles.quizTitle}>Kuis Hukum Newton II</Text>
@@ -425,7 +414,7 @@ export default function QuizScreen() {
                   </Pressable>
 
                   <Pressable onPress={onOpenReview} style={quizStyles.btnQuiz}>
-                    <Text style={quizStyles.btnQuizText}>📋 Lihat Pembahasan</Text>
+                    <Text style={quizStyles.btnQuizText}>📋 Pembahasan</Text>
                   </Pressable>
                 </View>
               </View>
@@ -486,8 +475,6 @@ export default function QuizScreen() {
           </View>
         </View>
       </ScrollView>
-
-      {/* Footer sengaja tidak ada */}
     </View>
   );
 }
