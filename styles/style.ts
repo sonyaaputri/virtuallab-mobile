@@ -79,85 +79,98 @@ export const landingStyles = StyleSheet.create({
   // .navbar
   navbar: {
     width: '100%',
-    paddingVertical: 20,
-    paddingHorizontal: 0,
+    paddingVertical: 18,
+    paddingHorizontal: 5,
     backgroundColor: 'rgba(255,255,255,0.1)',
   },
   
   navContent: {
-    flexDirection: SCREEN_WIDTH <= 768 ? 'column' : 'row',
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 15 as any,
-    paddingHorizontal: 20, 
     maxWidth: 1200,
     alignSelf: 'center',
     width: '100%',
   },
+  
   logoRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 6 as any,
+    flexShrink: 1,
+    marginTop: SCREEN_WIDTH <= 768 ? 30 : 1,
   },
+  
+  logoImg: {
+    width: SCREEN_WIDTH <= 768 ? 28 : 42,
+    height: SCREEN_WIDTH <= 768 ? 28 : 42,
+    resizeMode: 'contain',
+  },
+  
   logoText: {
-    fontSize: SCREEN_WIDTH <= 768 ? 24 : 28,
+    fontSize: SCREEN_WIDTH <= 768 ? 17 : 26,
     fontWeight: 'bold',
     color: COLORS.white,
+    flexShrink: 1,
   },
+  
   navButtons: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    columnGap: 15 as any,
-    marginRight: SCREEN_WIDTH <= 768 ? 0 : 0,
+    gap: 8 as any,
+    justifyContent: 'flex-end',
+    marginLeft: 'auto',
+    transform: [{ scale: SCREEN_WIDTH <= 768 ? 0.85 : 1 }],
+    marginTop: SCREEN_WIDTH <= 768 ? 30 : 1,
   },
-
-// HERO
-hero: {
-  paddingTop: 25,
-  paddingBottom: 50,
-  alignItems: 'center',
-},
-heroContent: {
-  flexDirection: SCREEN_WIDTH <= 768 ? 'column' : 'row',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: SCREEN_WIDTH <= 768 ? 30 : 40,
-  minHeight: SCREEN_WIDTH <= 768 ? undefined : 400,
-},
-heroMascotWrap: {
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: SCREEN_WIDTH <= 768 ? 250 : 300,
-},
-heroMascotImage: {
-  width: SCREEN_WIDTH <= 768 ? 200 : 350,
-  height: SCREEN_WIDTH <= 768 ? 250 : 420,
-  resizeMode: 'contain',
-},
-heroTextWrap: {
-  flex: SCREEN_WIDTH <= 768 ? 0 : 1,
-  alignItems: 'center',
-  maxWidth: 800,
-},
-heroTitle: {
-  fontSize: SCREEN_WIDTH <= 768 ? 40 : 56,
-  fontWeight: 'bold',
-  color: COLORS.white,
-  marginBottom: 20,
-  textAlign: 'center',
-  textShadowColor: 'rgba(0,0,0,0.3)',
-  textShadowOffset: { width: 2, height: 2 },
-  textShadowRadius: 4,
-},
-heroParagraph: {
-  fontSize: SCREEN_WIDTH <= 768 ? 16 : 21,
-  color: COLORS.white,
-  opacity: 0.9,
-  marginBottom: 40,
-  maxWidth: 600,
-  textAlign: 'center',
-  lineHeight: 26,
-},
+  
+  // HERO
+  hero: {
+    paddingTop: 25,
+    paddingBottom: 50,
+    alignItems: 'center',
+  },
+  heroContent: {
+    flexDirection: SCREEN_WIDTH <= 768 ? 'column' : 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SCREEN_WIDTH <= 768 ? 30 : 40,
+    minHeight: SCREEN_WIDTH <= 768 ? undefined : 400,
+  },
+  heroMascotWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: SCREEN_WIDTH <= 768 ? 250 : 300,
+  },
+  heroMascotImage: {
+    width: SCREEN_WIDTH <= 768 ? 200 : 350,
+    height: SCREEN_WIDTH <= 768 ? 250 : 420,
+    resizeMode: 'contain',
+  },
+  heroTextWrap: {
+    flex: SCREEN_WIDTH <= 768 ? 0 : 1,
+    alignItems: 'center',
+    maxWidth: 800,
+  },
+  heroTitle: {
+    fontSize: SCREEN_WIDTH <= 768 ? 40 : 56,
+    fontWeight: 'bold',
+    color: COLORS.white,
+    marginBottom: 20,
+    textAlign: 'center',
+    textShadowColor: 'rgba(0,0,0,0.3)',
+    textShadowOffset: { width: 2, height: 2 },
+    textShadowRadius: 4,
+  },
+  heroParagraph: {
+    fontSize: SCREEN_WIDTH <= 768 ? 16 : 21,
+    color: COLORS.white,
+    opacity: 0.9,
+    marginBottom: 40,
+    maxWidth: 600,
+    textAlign: 'center',
+    lineHeight: 26,
+  },
 
   // FEATURES
   featuresSection: {
