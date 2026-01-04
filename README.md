@@ -69,5 +69,6 @@ Aplikasi ini merupakan hasil **konversi dari Virtual Lab Fisika versi web ke apl
 ---
 
 ## Repository
+- **GitHub (Web)**: https://github.com/auliaazkaazzahra/virtuallab.git  
 - **GitHub (Mobile)**: https://github.com/sonyaaputri/virtuallab-mobile.git  
 - **Backend API**: https://virtuallab-production.up.railway.app  
