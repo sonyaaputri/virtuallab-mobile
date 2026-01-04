@@ -24,11 +24,12 @@ class NewtonLawSimulation {
     this.isRecording = false
     this.initializeControls()
     this.initializeAudio()
-    this.initializeDownload()
     this.updateCalculations()
     this.draw()
     this.startDataAnimation()
     this.loadStats()
+    this.hasCountedThisRun = false
+    this.hasStartedThisRun = false
   }
 
   initializeControls() {
@@ -73,71 +74,15 @@ class NewtonLawSimulation {
       this.soundEnabled = false
     }
     const soundToggle = document.getElementById("soundToggle")
+    if (!soundToggle) {
+      this.soundEnabled = false
+      return
+    }
     soundToggle.addEventListener("change", (e) => {
       this.soundEnabled = e.target.checked
       const icon = document.querySelector(".sound-icon")
-      icon.textContent = this.soundEnabled ? "🔊" : "🔇"
+      if (icon) icon.textContent = this.soundEnabled ? "🔊" : "🔇"
     })
-  }
-
-  initializeDownload() {
-    window.downloadSimulationReport = () => {
-      this.playSound("download", 0.5)
-      if (!window.MediaRecorder) {
-        alert("MediaRecorder tidak didukung di browser ini. Silakan gunakan browser modern seperti Chrome atau Firefox.")
-        return
-      }
-
-      const stream = this.canvas.captureStream(30)
-      const mediaRecorder = new MediaRecorder(stream, {
-        mimeType: 'video/webm;codecs=vp9'
-      })
-
-      const chunks = []
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          chunks.push(event.data)
-        }
-      }
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(chunks, { type: 'video/webm' })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement("a")
-        a.href = url
-        a.download = `newton-simulation-video-${Date.now()}.webm`
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-        URL.revokeObjectURL(url)
-        const downloadBtn = document.getElementById("downloadBtn")
-        downloadBtn.innerHTML = "📥 Download Hasil"
-        downloadBtn.disabled = false
-      }
-
-      mediaRecorder.start()
-      this.mediaRecorder = mediaRecorder
-      this.isRecording = true
-      const downloadBtn = document.getElementById("downloadBtn")
-      downloadBtn.innerHTML = "⏸️ Merekam Video..."
-      downloadBtn.disabled = true
-      const maxRecordDuration = 15000
-      const checkStopInterval = setInterval(() => {
-        if (Math.abs(this.velocity) < 0.1 && this.isRunning) {
-          if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
-            this.mediaRecorder.stop()
-            this.isRecording = false
-            clearInterval(checkStopInterval)
-          }
-        }
-      }, 100)
-      setTimeout(() => {
-        if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
-          this.mediaRecorder.stop()
-          this.isRecording = false
-        }
-        clearInterval(checkStopInterval)
-      }, maxRecordDuration)
-    }
   }
 
   playSound(type, volume = 0.5) {
@@ -204,16 +149,16 @@ class NewtonLawSimulation {
     startBtn.className = "btn btn-pause"
     document.getElementById("simulationStatus").textContent = "● Simulasi Berjalan"
     document.getElementById("simulationStatus").className = "simulation-status status-running"
-    this.updateSimulationCount()
+    this.hasStartedThisRun = true
+    if (!this.hasCountedThisRun) {
+      this.updateSimulationCount()
+      this.hasCountedThisRun = true
+    }
     this.animate()
   }
 
   pause() {
     this.isRunning = false
-    if (this.simulationStartTime) {
-      this.totalSimulationTime += (performance.now() - this.simulationStartTime) / 1000
-      this.updateTotalTime()
-    }
     const startBtn = document.getElementById("startBtn")
     startBtn.innerHTML = "▶️ Lanjutkan"
     startBtn.className = "btn btn-start"
@@ -225,25 +170,42 @@ class NewtonLawSimulation {
   }
 
   reset() {
-    this.pause()
+
+    this.isRunning = false
+    if (this.animationId) cancelAnimationFrame(this.animationId)
+
+    if (this.hasStartedThisRun && this.time > 0) {
+      this.totalSimulationTime += this.time
+      this.updateTotalTime()
+    }
+
+    this.hasCountedThisRun = false
+    this.hasStartedThisRun = false
+
     this.velocity = 0
     this.position = 60
     this.time = 0
     this.trails = []
+
     document.getElementById("velocityValue").textContent = "0.0"
     document.getElementById("positionValue").textContent = "0.0"
     document.getElementById("timeValue").textContent = "0.0"
+
     const startBtn = document.getElementById("startBtn")
     startBtn.innerHTML = "▶️ Mulai Simulasi"
     startBtn.className = "btn btn-start"
+
     document.getElementById("simulationStatus").textContent = "● Siap Dimulai"
     document.getElementById("simulationStatus").className = "simulation-status status-ready"
+
     document.getElementById("resetBtn").classList.add("bounce")
     setTimeout(() => {
       document.getElementById("resetBtn").classList.remove("bounce")
     }, 500)
+
     this.draw()
   }
+
 
   animate(currentTime = performance.now()) {
     if (!this.isRunning) return
@@ -470,15 +432,6 @@ class NewtonLawSimulation {
     this.totalSimulationTime = Number.parseFloat(time)
   }
 }
-
-window.addEventListener("load", () => {
-  new NewtonLawSimulation()
-  document.body.style.opacity = "0"
-  document.body.style.transition = "opacity 0.5s ease"
-  setTimeout(() => {
-    document.body.style.opacity = "1"
-  }, 100)
-})
 
 document.addEventListener("keydown", (e) => {
   switch (e.key) {

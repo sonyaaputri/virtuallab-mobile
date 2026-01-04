@@ -408,7 +408,7 @@ export default function GamesScreen() {
           </View>
         </View>
 
-        <Text style={gamesStyles.controlsHint}> ← → untuk bergerak • Tombol 🔫 untuk menembak</Text>
+        <Text style={gamesStyles.controlsHint}> ◀ ▶ untuk bergerak • Tombol 🔫 untuk menembak</Text>
 
         {/* TOUCH CONTROLS */}
         <View style={gamesStyles.touchControls}>
@@ -417,7 +417,7 @@ export default function GamesScreen() {
             onPressOut={() => (moveLeftHeld.current = false)}
             style={gamesStyles.controlBtn}
           >
-            <Text style={gamesStyles.controlBtnText}>←</Text>
+            <Text style={gamesStyles.controlBtnText}>◀</Text>
           </Pressable>
 
           <Pressable
@@ -432,7 +432,7 @@ export default function GamesScreen() {
             onPressOut={() => (moveRightHeld.current = false)}
             style={gamesStyles.controlBtn}
           >
-            <Text style={gamesStyles.controlBtnText}>→</Text>
+            <Text style={gamesStyles.controlBtnText}>▶</Text>
           </Pressable>
         </View>
       </View>

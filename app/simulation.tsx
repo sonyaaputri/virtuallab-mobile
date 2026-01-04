@@ -16,6 +16,8 @@ type CurrentUser = {
   avatar?: string;
   initials?: string;
   photo?: string;
+  email?: string;
+  id?: string | number;
 };
 
 async function readBundledText(moduleId: number) {
@@ -25,12 +27,35 @@ async function readBundledText(moduleId: number) {
   return await FileSystem.readAsStringAsync(uri);
 }
 
+function safeUserKey(user: CurrentUser | null) {
+  const raw =
+    (user?.id != null ? String(user.id) : '') ||
+    (user?.email ? user.email : '') ||
+    (user?.name ? user.name : '') ||
+    'guest';
+  return raw.replace(/[^a-zA-Z0-9._-]/g, '_');
+}
+
 export default function SimulationNewtonScreen() {
   const router = useRouter();
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [html, setHtml] = useState<string>('');
 
+  // ✅ progres persistent (di-load dari AsyncStorage, bukan reset 0)
+  const [savedCount, setSavedCount] = useState<string>('0');
+  const [savedTotalTime, setSavedTotalTime] = useState<string>('0');
+  const [statsReady, setStatsReady] = useState(false);
+
   const avatarText = useMemo(() => user?.avatar || user?.initials || 'U', [user]);
+  const userKey = useMemo(() => safeUserKey(user), [user]);
+
+  const STORAGE_KEYS = useMemo(() => {
+    const prefix = `sim:newton:${userKey}:`;
+    return {
+      simCount: `${prefix}simulationCount`,
+      totalTime: `${prefix}totalTime`,
+    };
+  }, [userKey]);
 
   useEffect(() => {
     (async () => {
@@ -43,6 +68,21 @@ export default function SimulationNewtonScreen() {
       }
     })();
   }, []);
+
+  // ✅ load progres per user saat userKey sudah ada
+  useEffect(() => {
+    (async () => {
+      // tunggu userKey ada (minimal guest)
+      if (!userKey) return;
+      const [c, t] = await Promise.all([
+        AsyncStorage.getItem(STORAGE_KEYS.simCount),
+        AsyncStorage.getItem(STORAGE_KEYS.totalTime),
+      ]);
+      setSavedCount(c ?? '0');
+      setSavedTotalTime(t ?? '0');
+      setStatsReady(true);
+    })();
+  }, [STORAGE_KEYS.simCount, STORAGE_KEYS.totalTime, userKey]);
 
   const goBack = () => {
     if (router.canGoBack()) router.back();
@@ -57,6 +97,8 @@ export default function SimulationNewtonScreen() {
         readBundledText(require('../assets/web/simulation/simulation-hukum-newton.js.txt')),
       ]);
 
+      // ✅ ini tetap seperti kode kamu (hapus footer jika kamu memang mau)
+      // NOTE: kalau JS kamu butuh elemen di footer, jangan hapus.
       let patched = htmlText.replace(/<footer[\s\S]*?<\/footer>/gi, '');
 
       patched = patched.replace(
@@ -75,7 +117,7 @@ export default function SimulationNewtonScreen() {
         </style>
         `;
 
-        patched = patched.replace('</head>', `${hideHeaderCss}\n</head>`);
+      patched = patched.replace('</head>', `${hideHeaderCss}\n</head>`);
 
       patched = patched.replace(
         /<script[^>]*src=["'][^"']+\.js["'][^>]*><\/script>/gi,
@@ -93,79 +135,141 @@ export default function SimulationNewtonScreen() {
     })();
   }, []);
 
-    const injectedBeforeLoad = useMemo(() => {
+  /**
+   * ✅ INI KUNCINYA:
+   * localStorage polyfill MEMORY + preload dari AsyncStorage (savedCount, savedTotalTime)
+   * lalu setiap setItem untuk simulationCount/totalTime -> postMessage ke RN untuk disimpan
+   */
+  const injectedBeforeLoad = useMemo(() => {
+    // string aman (tidak null)
+    const initCount = JSON.stringify(savedCount ?? '0');
+    const initTime = JSON.stringify(savedTotalTime ?? '0');
+
     return `
-        (function () {
-        // ===== localStorage POLYFILL (karena WebView kamu blok) =====
-        try {
-            var __mem = {};
-            Object.defineProperty(window, 'localStorage', {
-            value: {
-                getItem: function(k){ return __mem.hasOwnProperty(k) ? __mem[k] : null; },
-                setItem: function(k,v){ __mem[k] = String(v); },
-                removeItem: function(k){ delete __mem[k]; },
-                clear: function(){ __mem = {}; }
-            },
-            configurable: true
-            });
-        } catch(e) {}
+(function () {
+  try {
+    var __mem = {};
+    // ✅ preload progres terakhir
+    __mem["simulationCount"] = ${initCount};
+    __mem["totalTime"] = ${initTime};
 
-        // ===== cegah fungsi header web crash =====
-        window.initializeUserInfo = function(){};
+    function post(obj){
+      try {
+        if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+          window.ReactNativeWebView.postMessage(JSON.stringify(obj));
+        }
+      } catch(e){}
+    }
 
-        // ===== pastikan init setelah DOM siap =====
-        window.__BOOT_SIM__ = function(){
-            try {
-            if (typeof NewtonLawSimulation === 'function') {
-                if (!window.__SIM_INSTANCE__) window.__SIM_INSTANCE__ = new NewtonLawSimulation();
-            }
-            } catch (e) {
-            if (window.ReactNativeWebView) {
-                window.ReactNativeWebView.postMessage('WEB_ERROR:BOOT_FAIL ' + (e && e.message ? e.message : 'unknown'));
-            }
-            }
-        };
+    Object.defineProperty(window, 'localStorage', {
+      value: {
+        getItem: function(k){ return __mem.hasOwnProperty(k) ? __mem[k] : null; },
+        setItem: function(k,v){
+          __mem[k] = String(v);
+          // ✅ sync hanya key yang kamu butuh
+          if (k === "simulationCount" || k === "totalTime") {
+            post({ type: "STATS_UPDATE", key: k, value: String(v) });
+          }
+        },
+        removeItem: function(k){
+          delete __mem[k];
+          if (k === "simulationCount" || k === "totalTime") {
+            post({ type: "STATS_REMOVE", key: k });
+          }
+        },
+        clear: function(){ __mem = {}; }
+      },
+      configurable: true
+    });
+  } catch(e) {}
 
-        document.addEventListener('DOMContentLoaded', function(){
-            setTimeout(window.__BOOT_SIM__, 50);
-        });
+  // cegah fungsi header web crash
+  window.initializeUserInfo = function(){};
 
-        // debug error
-        window.onerror = function(msg, src, line, col) {
-            if (window.ReactNativeWebView) {
-            window.ReactNativeWebView.postMessage('WEB_ERROR:' + msg + ' @' + line + ':' + col);
-            }
-        };
-        })();
-        true;
-    `;
-    }, []);
+  // init setelah DOM siap (kode kamu)
+  window.__BOOT_SIM__ = function(){
+    try {
+      if (typeof NewtonLawSimulation === 'function') {
+        if (!window.__SIM_INSTANCE__) window.__SIM_INSTANCE__ = new NewtonLawSimulation();
+      }
+    } catch (e) {
+      if (window.ReactNativeWebView) {
+        window.ReactNativeWebView.postMessage('WEB_ERROR:BOOT_FAIL ' + (e && e.message ? e.message : 'unknown'));
+      }
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(window.__BOOT_SIM__, 50);
+  });
+
+  window.onerror = function(msg, src, line, col) {
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage('WEB_ERROR:' + msg + ' @' + line + ':' + col);
+    }
+  };
+})();
+true;
+`;
+  }, [savedCount, savedTotalTime]);
 
   const injectedAfterLoad = useMemo(() => {
     return `
-      (function(){
-        try {
-          if (!window.__SIM_INITED__ && typeof NewtonLawSimulation === 'function') {
-            window.__SIM_INITED__ = true;
-            window.__SIM_INSTANCE__ = new NewtonLawSimulation();
-          }
-        } catch (e) {
-          if (window.ReactNativeWebView) {
-            window.ReactNativeWebView.postMessage('WEB_ERROR:INIT_FAIL ' + (e && e.message ? e.message : 'unknown'));
-          }
-        }
-      })();
-      true;
-    `;
+(function(){
+  try {
+    if (!window.__SIM_INITED__ && typeof NewtonLawSimulation === 'function') {
+      window.__SIM_INITED__ = true;
+      window.__SIM_INSTANCE__ = new NewtonLawSimulation();
+    }
+  } catch (e) {
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage('WEB_ERROR:INIT_FAIL ' + (e && e.message ? e.message : 'unknown'));
+    }
+  }
+})();
+true;
+`;
   }, []);
 
-  const onMessage = (event: any) => {
+  const onMessage = async (event: any) => {
     const msg = event?.nativeEvent?.data;
 
     if (msg === 'GO_BACK') goBack();
     if (msg === 'OPEN_PROFILE') router.push('/profile-settings');
+
     if (typeof msg === 'string' && msg.startsWith('WEB_ERROR:')) {
       console.log(msg);
+      return;
+    }
+
+    // ✅ terima sync progres dari WebView polyfill
+    if (typeof msg === 'string') {
+      try {
+        const data = JSON.parse(msg);
+
+        if (data?.type === 'STATS_UPDATE' && (data.key === 'simulationCount' || data.key === 'totalTime')) {
+          const storageKey = data.key === 'simulationCount' ? STORAGE_KEYS.simCount : STORAGE_KEYS.totalTime;
+          const value = String(data.value ?? '0');
+          await AsyncStorage.setItem(storageKey, value);
+
+          // ✅ update state pakai value terbaru, bukan "0"
+          if (data.key === 'simulationCount') setSavedCount(value);
+          if (data.key === 'totalTime') setSavedTotalTime(value);
+
+          return;
+        }
+
+        if (data?.type === 'STATS_REMOVE' && (data.key === 'simulationCount' || data.key === 'totalTime')) {
+          const storageKey = data.key === 'simulationCount' ? STORAGE_KEYS.simCount : STORAGE_KEYS.totalTime;
+          await AsyncStorage.removeItem(storageKey);
+
+          if (data.key === 'simulationCount') setSavedCount('0');
+          if (data.key === 'totalTime') setSavedTotalTime('0');
+          return;
+        }
+      } catch {
+        // ignore
+      }
     }
   };
 
@@ -190,7 +294,7 @@ export default function SimulationNewtonScreen() {
         </View>
       </SafeAreaView>
 
-      {html ? (
+      {html && statsReady ? (
         <WebView
           originWhitelist={['*']}
           source={{ html }}
@@ -206,6 +310,7 @@ export default function SimulationNewtonScreen() {
           <Text>Loading simulation...</Text>
         </View>
       )}
+
     </View>
   );
 }
