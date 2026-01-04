@@ -1,4 +1,4 @@
-![Background](frontend/assets/Background.png)
+![Background](assets/images/Background.png)
 
 # Virtual Lab Fisika — Mobile App
 
@@ -57,9 +57,6 @@ Aplikasi ini merupakan hasil **konversi dari Virtual Lab Fisika versi web ke apl
 3. Jalankan di:
    - Android Emulator atau perangkat fisik (Expo Go)
    - Build APK sesuai kebutuhan tugas
-
-> Pengujian login & signup lebih stabil di Android/iOS.  
-> Mode web dapat terkena batasan CORS dari browser.
 
 ---
 
