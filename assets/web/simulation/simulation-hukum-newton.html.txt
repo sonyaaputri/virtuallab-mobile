@@ -45,6 +45,9 @@
               <div class="simulation-status status-ready" id="simulationStatus">
                 ● Siap Dimulai
               </div>
+              <button class="btn btn-download" id="downloadBtn" type="button">
+                📥 Download Hasil
+              </button>
             </div>
           </div>
           <canvas id="canvas" width="700" height="450"></canvas>

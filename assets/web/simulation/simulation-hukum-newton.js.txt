@@ -64,6 +64,13 @@ class NewtonLawSimulation {
       this.reset()
       this.playSound("reset", 0.6)
     })
+
+    const downloadBtn = document.getElementById("downloadBtn");
+    if (downloadBtn) {
+      downloadBtn.addEventListener("click", function () {
+        alert('Fitur download tidak tersedia pada versi mobile.\n');
+      });
+    }
   }
 
   initializeAudio() {
